@@ -19,4 +19,12 @@ public class RecipeService {
     public List<RecipeEntity> getByDiet(String diet) {
         return this.recipeRepository.findByDietIgnoreCase(diet);
     }
+
+    public List<RecipeEntity> getByType(String type) {
+        return this.recipeRepository.findByTypeIgnoreCase(type);
+    }
+
+    public List<RecipeEntity> getWith(String ingredient) {
+        return this.recipeRepository.findAllByStepsContainingIgnoreCase(ingredient);
+    }
 }

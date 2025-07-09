@@ -27,4 +27,14 @@ public class RecipeController {
     public ResponseEntity<List<RecipeEntity>> getByDiet(@PathVariable String diet) {
         return ResponseEntity.ok(this.recipeService.getByDiet(diet));
     }
+
+    @GetMapping("/type/{type}")    
+    public ResponseEntity<List<RecipeEntity>> getByType(@PathVariable String type) {
+        return ResponseEntity.ok(this.recipeService.getByType(type));
+    }
+
+    @GetMapping("/contains/{ingredient}")    
+    public ResponseEntity<List<RecipeEntity>> getWith(@PathVariable String ingredient) {
+        return ResponseEntity.ok(this.recipeService.getWith(ingredient));
+    }
 }
