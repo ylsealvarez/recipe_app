@@ -27,4 +27,16 @@ public class RecipeService {
     public List<RecipeEntity> getWith(String ingredient) {
         return this.recipeRepository.findAllByStepsContainingIgnoreCase(ingredient);
     }
+
+    public RecipeEntity save(RecipeEntity recipe){
+        return this.recipeRepository.save(recipe);
+    }
+
+    public boolean exists(int idRecipe){
+        return this.recipeRepository.existsById(idRecipe);
+    }
+
+    public void delete(int idRecipe){
+        this.recipeRepository.deleteById(idRecipe);
+    }
 }
