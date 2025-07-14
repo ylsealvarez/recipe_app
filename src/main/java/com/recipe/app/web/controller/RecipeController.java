@@ -15,7 +15,6 @@ import com.recipe.app.service.RecipeService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -26,6 +25,11 @@ public class RecipeController {
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
+    }
+
+    @GetMapping("/{idRecipe}")
+    public ResponseEntity<RecipeEntity> get(@PathVariable int idRecipe){
+        return ResponseEntity.ok(this.recipeService.get(idRecipe));
     }
 
     @GetMapping("/diet/{diet}")    

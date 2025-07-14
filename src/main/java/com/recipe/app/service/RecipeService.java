@@ -17,7 +17,11 @@ public class RecipeService {
     }
 
     public List<RecipeEntity> getByDiet(String diet) {
-        return this.recipeRepository.findByDietIgnoreCase(diet);
+        return this.recipeRepository.findTop9ByDietIgnoreCaseOrderByRatingDesc(diet);
+    }
+
+    public RecipeEntity get(int idRecipe){
+        return this.recipeRepository.findById(idRecipe).orElse(null);
     }
 
     public List<RecipeEntity> getByType(String type) {
