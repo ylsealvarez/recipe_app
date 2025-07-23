@@ -1,8 +1,14 @@
 package com.recipe.app.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,4 +41,12 @@ public class UserEntity {
 
     @Column(nullable = false, unique = true)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+      name = "user_favorites",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<RecipeEntity> favorites = new HashSet<>();
 }

@@ -1,10 +1,16 @@
 package com.recipe.app.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +52,13 @@ public class RecipeEntity {
     private String diet;
 
     private Double rating;
+
+    @Column(name = "is_premium", columnDefinition = "boolean default false", nullable = false)
+    private Boolean isPremium;
+
+    @ManyToMany(mappedBy = "favorites")
+    @JsonIgnore
+    private Set<UserEntity> favoredBy = new HashSet<>();
     
 }
 

@@ -42,7 +42,7 @@ public class RecipeService {
     }
 
     public List<RecipeEntity> getWith(String ingredient) {
-        return this.recipeRepository.findAllByStepsContainingIgnoreCase(ingredient);
+        return this.recipeRepository.findAllByNameContainingIgnoreCase(ingredient);
     }
 
     public RecipeEntity save(RecipeEntity recipe){
@@ -55,5 +55,13 @@ public class RecipeService {
 
     public void delete(int idRecipe){
         this.recipeRepository.deleteById(idRecipe);
+    }
+
+    public List<RecipeEntity> isPremium() {
+        return this.recipeRepository.findAllByIsPremiumTrue();
+    }
+
+    public List<RecipeEntity> isBasic() {
+        return this.recipeRepository.findAllByIsPremiumFalse();
     }
 }
