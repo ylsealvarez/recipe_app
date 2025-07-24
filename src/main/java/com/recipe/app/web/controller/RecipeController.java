@@ -1,10 +1,15 @@
 package com.recipe.app.web.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.recipe.app.persistence.entity.RecipeEntity;
 import com.recipe.app.service.FavoriteService;
@@ -42,8 +48,24 @@ public class RecipeController {
     }
 
     @GetMapping("/{idRecipe}")
-    public ResponseEntity<RecipeEntity> get(@PathVariable int idRecipe) {
-        return ResponseEntity.ok(this.recipeService.get(idRecipe));
+    public ResponseEntity<RecipeEntity> get(@PathVariable int idRecipe, @AuthenticationPrincipal UserDetails user) {
+        RecipeEntity recipe = this.recipeService.get(idRecipe);
+
+        boolean isPremiumRecipe = Boolean.TRUE.equals(recipe.getIsPremium());
+
+        boolean hasPremiumOrPro = user != null &&
+                user.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .anyMatch(auth -> auth.equals("ROLE_PREMIUM") ||
+                                auth.equals("ROLE_PROFESSIONAL"));
+
+        if (isPremiumRecipe && !hasPremiumOrPro) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Acceso PREMIUM o PROFESSIONAL requerido");
+        }
+
+        return ResponseEntity.ok(recipe);
     }
 
     @GetMapping("/diet/{diet}")
@@ -89,15 +111,16 @@ public class RecipeController {
     @PostMapping("/{recipeId}/favorite")
     public ResponseEntity<Void> toggleFavorite(
             @PathVariable Integer recipeId,
-            @RequestHeader("X-User-Id") String userId) {
-        favoriteService.toggleFavorite(userId, recipeId);
+            Principal principal) {
+        String username = principal.getName();  
+        favoriteService.toggleFavorite(username, recipeId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<Set<RecipeEntity>> getMyFavorites(
-            @RequestHeader("X-User-Id") String userId) {
-        Set<RecipeEntity> favs = favoriteService.getFavorites(userId);
+    public ResponseEntity<List<RecipeEntity>> getMyFavorites(Principal principal) {
+        String username = principal.getName();                   
+        List<RecipeEntity> favs = this.favoriteService.getFavorites(username);
         return ResponseEntity.ok(favs);
     }
 

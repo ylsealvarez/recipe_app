@@ -1,6 +1,8 @@
 package com.recipe.app.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -24,8 +26,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void toggleFavorite(String userId, Integer recipeId) {
-        UserEntity user = userRepository.findById(userId)
+    public void toggleFavorite(String username, Integer recipeId) {
+        UserEntity user = userRepository.findById(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         RecipeEntity recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
@@ -40,10 +42,11 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Set<RecipeEntity> getFavorites(String userId) {
-        return userRepository.findById(userId)
+    public List<RecipeEntity> getFavorites(String username) {
+        return userRepository.findById(username)
                 .map(UserEntity::getFavorites)
-                .orElse(Collections.emptySet());
+                .map(set -> set.stream().toList())
+                .orElse(Collections.emptyList());
     }
 
 }

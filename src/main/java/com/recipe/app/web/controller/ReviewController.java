@@ -3,6 +3,7 @@ package com.recipe.app.web.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class ReviewController {
         return ResponseEntity.ok(this.reviewService.getAllReviewsByRecipe(idRecipe));
     }
 
+    @Secured({"ROLE_PREMIUM", "ROLE_PROFESSIONAL"})
     @PostMapping
     public ResponseEntity<ReviewEntity> save(@PathVariable int idRecipe,
                                              @RequestBody ReviewEntity review) {

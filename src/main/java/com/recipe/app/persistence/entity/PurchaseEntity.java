@@ -27,8 +27,8 @@ public class PurchaseEntity {
     @Column(name = "id_purchase", nullable = false)
     private Integer idPurchase;
     
-    @Column(name = "user_id", nullable = false, length = 15)
-    private String idUser;
+    @Column(name = "username", nullable = false, length = 15)
+    private String username;
 
     @Column(nullable = false, columnDefinition = "DATE")
     private LocalDateTime date;
@@ -40,7 +40,7 @@ public class PurchaseEntity {
     private String method;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false, insertable = false)
+    @JoinColumn(name = "username", referencedColumnName = "username", updatable = false, insertable = false)
     private UserEntity user;
 
     @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)

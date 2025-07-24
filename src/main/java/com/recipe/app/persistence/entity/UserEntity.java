@@ -1,14 +1,17 @@
 package com.recipe.app.persistence.entity;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +24,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @Column(name = "user_id", nullable = false, length = 15)
-    private String idUser;
+    @Column(nullable = false, length = 15)
+    private String username;
 
     @Column(nullable = false, length = 30)
     private String firstname;
@@ -42,10 +45,13 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String password;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserRoleEntity> roles;
+
     @ManyToMany
     @JoinTable(
       name = "user_favorites",
-      joinColumns = @JoinColumn(name = "user_id"),
+      joinColumns = @JoinColumn(name = "username"),
       inverseJoinColumns = @JoinColumn(name = "recipe_id")
     )
     private Set<RecipeEntity> favorites = new HashSet<>();
