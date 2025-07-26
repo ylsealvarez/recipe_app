@@ -34,6 +34,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/api/users/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/recipes/favorites").hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
                     .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/recipes/*/favorite").hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
