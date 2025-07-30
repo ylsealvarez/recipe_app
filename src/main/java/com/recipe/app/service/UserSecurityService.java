@@ -32,8 +32,5 @@ public class UserSecurityService implements UserDetailsService{
                 .password(userEntity.getPassword())
                 .roles(roles)
                 .build();
-    }
-
-    
-    
+    }  
 }

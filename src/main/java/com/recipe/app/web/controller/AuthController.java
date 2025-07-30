@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.recipe.app.service.UserService;
 import com.recipe.app.service.dto.LoginDto;
+import com.recipe.app.service.dto.MessageResponse;
+import com.recipe.app.service.dto.SignupDto;
 import com.recipe.app.web.config.JwtUtil;
 
 @RestController
@@ -19,11 +22,13 @@ import com.recipe.app.web.config.JwtUtil;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
     
     @PostMapping("/login")
@@ -37,5 +42,12 @@ public class AuthController {
         String jwt = this.jwtUtil.create(loginDto.getUsername());
 
         return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwt).build();
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<MessageResponse> signup(@RequestBody SignupDto dto) {
+        userService.register(dto);
+        return ResponseEntity
+            .ok(new MessageResponse("Usuario registrado con éxito"));
     }
 }
