@@ -7,14 +7,12 @@ import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,21 +46,21 @@ public class RecipeController {
     }
 
     @GetMapping("/{idRecipe}")
-    public ResponseEntity<RecipeEntity> get(@PathVariable int idRecipe, @AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<RecipeEntity> get(@PathVariable int idRecipe, Authentication auth) {
         RecipeEntity recipe = this.recipeService.get(idRecipe);
 
         boolean isPremiumRecipe = Boolean.TRUE.equals(recipe.getIsPremium());
 
-        boolean hasPremiumOrPro = user != null &&
-                user.getAuthorities().stream()
+        boolean hasPremiumOrPro = auth != null &&
+                auth.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
-                        .anyMatch(auth -> auth.equals("ROLE_PREMIUM") ||
-                                auth.equals("ROLE_PROFESSIONAL"));
+                        .anyMatch(r -> r.equals("ROLE_PREMIUM") ||
+                                r.equals("ROLE_PROFESSIONAL"));
 
         if (isPremiumRecipe && !hasPremiumOrPro) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
-                    "Acceso PREMIUM o PROFESSIONAL requerido");
+                    "PREMIUM o PROFESSIONAL access required");
         }
 
         return ResponseEntity.ok(recipe);
