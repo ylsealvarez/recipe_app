@@ -89,12 +89,14 @@ public class RecipeController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping
-    public ResponseEntity<RecipeEntity> update(@RequestBody RecipeEntity recipe) {
-        if (recipe.getIdRecipe() != null && this.recipeService.exists(recipe.getIdRecipe())) {
-            return ResponseEntity.ok(this.recipeService.save(recipe));
+    @PutMapping("/{idRecipe}")
+    public ResponseEntity<RecipeEntity> update(@PathVariable int idRecipe, @RequestBody RecipeEntity recipe) {
+        if (!recipeService.exists(idRecipe)) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
+        recipe.setIdRecipe(idRecipe);
+        RecipeEntity updated = recipeService.save(recipe);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{idRecipe}")
@@ -110,14 +112,14 @@ public class RecipeController {
     public ResponseEntity<Void> toggleFavorite(
             @PathVariable Integer recipeId,
             Principal principal) {
-        String username = principal.getName();  
+        String username = principal.getName();
         favoriteService.toggleFavorite(username, recipeId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<RecipeEntity>> getMyFavorites(Principal principal) {
-        String username = principal.getName();                   
+        String username = principal.getName();
         List<RecipeEntity> favs = this.favoriteService.getFavorites(username);
         return ResponseEntity.ok(favs);
     }
