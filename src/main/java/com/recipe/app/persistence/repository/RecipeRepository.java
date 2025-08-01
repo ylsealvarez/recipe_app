@@ -12,4 +12,5 @@ public interface RecipeRepository extends ListCrudRepository<RecipeEntity, Integ
     List<RecipeEntity> findAllByNameContainingIgnoreCase(String ingredients);
     List<RecipeEntity> findAllByIsPremiumTrue();
     List<RecipeEntity> findAllByIsPremiumFalse();
+    List<RecipeEntity> findTop9ByOrderByRatingDesc();
 }

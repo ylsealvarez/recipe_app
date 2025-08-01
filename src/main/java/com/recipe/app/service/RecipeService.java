@@ -64,4 +64,8 @@ public class RecipeService {
     public List<RecipeEntity> isBasic() {
         return this.recipeRepository.findAllByIsPremiumFalse();
     }
+
+    public List<RecipeEntity> getTop() {
+        return this.recipeRepository.findTop9ByOrderByRatingDesc();
+    }
 }

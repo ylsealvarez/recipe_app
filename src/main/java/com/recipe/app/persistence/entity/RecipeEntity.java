@@ -56,6 +56,9 @@ public class RecipeEntity {
     @Column(name = "is_premium", columnDefinition = "boolean default false", nullable = false)
     private Boolean isPremium;
 
+    @Column(name = "imagen_url")
+    private String imagenUrl;
+
     @ManyToMany(mappedBy = "favorites")
     @JsonIgnore
     private Set<UserEntity> favoredBy = new HashSet<>();

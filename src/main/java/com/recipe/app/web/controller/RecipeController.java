@@ -39,7 +39,7 @@ public class RecipeController {
 
     @GetMapping("/all")
     public ResponseEntity<Page<RecipeEntity>> getAll(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "9") int elements,
+            @RequestParam(defaultValue = "12") int elements,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
         return ResponseEntity.ok(this.recipeService.getAll(page, elements, sortBy, sortDirection));
@@ -132,6 +132,11 @@ public class RecipeController {
     @GetMapping("/basic/all")
     public ResponseEntity<List<RecipeEntity>> getBasic() {
         return ResponseEntity.ok(this.recipeService.isBasic());
+    }
+
+    @GetMapping("/top")
+    public ResponseEntity<List<RecipeEntity>> getTop() {
+        return ResponseEntity.ok(this.recipeService.getTop());
     }
 
 }
