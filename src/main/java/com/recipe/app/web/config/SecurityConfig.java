@@ -30,21 +30,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/api/users/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/recipes/favorites").hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
-                    .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/recipes/*/favorite").hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
-                    .requestMatchers(HttpMethod.POST, "/api/recipes/*/review").hasAnyRole("PROFESSIONAL", "PREMIUM")
-                    .requestMatchers(HttpMethod.POST, "/api/recipes/**").hasRole("PROFESSIONAL")
-                    .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").hasRole("PROFESSIONAL")
-                    .requestMatchers(HttpMethod.PUT, "/api/recipes/**").hasRole("PROFESSIONAL")
-                    .anyRequest()
-                    .authenticated())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/recipes/favorites")
+                        .hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
+                        .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/recipes/*/favorite")
+                        .hasAnyRole("BASIC", "PROFESSIONAL", "PREMIUM")
+                        .requestMatchers(HttpMethod.POST, "/api/recipes/*/review").hasAnyRole("PROFESSIONAL", "PREMIUM")
+                        .requestMatchers(HttpMethod.POST, "/api/recipes/**").hasRole("PROFESSIONAL")
+                        .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").hasRole("PROFESSIONAL")
+                        .requestMatchers(HttpMethod.PUT, "/api/recipes/**").hasRole("PROFESSIONAL")
+                        .requestMatchers(
+                                "/", 
+                                "/index.html",
+                                "/favicon.ico",
+                                "/static/**", 
+                                "/**/*.js",
+                                "/**/*.css",
+                                "/**/*.png",
+                                "/**/*.svg",
+                                "/**/*.html")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
