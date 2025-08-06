@@ -1,2 +1,0 @@
-export { NewAccountForm } from "./NewAccountForm";
-

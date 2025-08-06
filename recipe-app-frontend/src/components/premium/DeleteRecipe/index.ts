@@ -1,1 +1,0 @@
-export { DeleteRecipe } from "./DeleteRecipe";
